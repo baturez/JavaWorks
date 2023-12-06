@@ -9,12 +9,12 @@ public class İşleme {
 	private IR I = new IR();
 	private SequenceCounter counter = new SequenceCounter();
 
-	public İşleme(String file) {
-		
+	public İşleme(String file) throws InterruptedException {
+
 		loadram(file, ram, decode, decode2);
 	}
-	
-	public void loadram(String file, SimpleRAM ram, decoder3x8 decode, decoder4x16 decode2) {
+
+	public void loadram(String file, SimpleRAM ram, decoder3x8 decode, decoder4x16 decode2) throws InterruptedException {
 		try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
 			String sıra;
 			int adres = 0;
@@ -60,7 +60,7 @@ public class İşleme {
 				case '8':
 					buyruk = "AND";
 					denetim = "0";
-					
+
 					break;
 				case '9':
 					buyruk = "ADD";
@@ -189,6 +189,7 @@ public class İşleme {
 				}
 				System.out.println("T" + time + " zamanda" + " I = " + I.getanlıkbuyruk() + " D " + denetim + " aktif "
 						+ " IR(0-11) = " + decode.getadress() + " buyruk= " + buyruk);
+				 Thread.sleep(1000);
 				counter.increment();
 				time++;
 				adres++;

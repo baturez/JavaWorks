@@ -6,6 +6,7 @@ public class decoder3x8 {
 	public String I;
 	String bina;
 	StringBuilder opcode;
+
 	public decoder3x8() {
 		çıktılar = new boolean[8];
 	}
@@ -18,15 +19,14 @@ public class decoder3x8 {
 			çıktılar[giriş.length()] = true;
 			bina = tobinary(girdi);
 			int a = bina.length();
-			
 
 			StringBuilder strbr = new StringBuilder(bina);
-			while(a != 16) {
+			while (a != 16) {
 				strbr.insert(0, "0");
 				a++;
 			}
 			opcode = strbr;
-			
+
 			I = String.valueOf(strbr.charAt(0));
 			for (int i = 0; i < bina.length(); i++) {
 				if (bina.length() > 12) {
@@ -37,17 +37,19 @@ public class decoder3x8 {
 					break;
 				}
 			}
-			
-			
+
 		} else
 			System.out.println(girdi);
 	}
+
 	public String get_I() {
 		return I;
 	}
+
 	public String getadress() {
 		return bina;
 	}
+
 	public StringBuilder opcode() {
 		return opcode;
 
