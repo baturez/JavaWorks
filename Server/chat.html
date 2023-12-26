@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -87,6 +87,61 @@
   background-color: antiquewhite;
 }
 
+#chat-container {
+            width: 70%;
+            max-width: 600px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-box {
+            flex-grow: 1;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+        }
+        .message{
+            width:150px;
+            height: 15px;
+            background-color: #ddd;
+        }
+        #input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-top: 1px solid #ccc;
+            border-radius: 0 0 8px 0;
+            outline: none;
+        }
+
+        #message-input:focus {
+            border-color: #4caf50;
+        }
+
+        #send-button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 0 0 0 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #send-button:hover {
+            background-color: #45a049;
+        }
 </style>
 </head>
 <body>
@@ -108,25 +163,13 @@
         </div>
 
         <ul class="conversations">
-          <li class="conversation">
-            <div class="conversation-name">Enes</div>
-            <div class="last-message">I dont like this</div>
-          </li>
-          <li class="conversation">
-            <div class="conversation-name">Batu</div>
-            <div class="last-message">We can tomorrow</div>
-          </li>
-          <li class="conversation">
-            <div class="conversation-name">Hasan</div>
-            <div class="last-message">I finished it yesterday.</div>
-          </li>
+     
         </ul>
      
       </aside>
 
       <div class="chat-container">
         <div class="user-container">
-          <img src="profile-pic.png" alt="" class="user-img">
           <div class="user-name">Batu</div>
         </div>
         <div class="chat">
@@ -137,22 +180,116 @@
             <div class="receieved-message">Açım !</div>
             <div class="sent-message">Oh! Nice to meet you Açım. </div>
           </div>
+
+        <div id="chat-container">
+          <div id="input-container">
+              <input type="text" id="message-input" placeholder="Mesajınızı girin" onkeyup="handleKeyPress(event)">
+              <button id="send-button" onclick="sendMessage()">Gönder</button>
+          </div>
+
         </div>
       </div>
 
     </div>
 
   <script >
+let username = document.querySelector('.user-name')
+let data = []
 
-let userName = document.querySelectorAll('.username');
 
-for (let i = 0; i < userName.length; i++) {
-  fetch('http://127.0.0.1:8989/Users'&&'http://localhost:8989/Users')
-  .then(response => response.text())
-  .then(data =>  console.log(JSON.parse(data)))
-
+getUsers();
+function getUsers(){
+    fetch('/users')
+        .then(response => response.text())
+        .then(users => {
+          users = users.split(" ");
+          users.pop();
+          users.forEach(user => {
+            
+            data.push(user.split(","))
+          });
+          let sender_name = localStorage.getItem('sender_name')
+          data.map(user => (user[1] == sender_name ) ? localStorage.setItem("sender_id",user[0]) : false)
+          writeUsers(changeConversation);
+        });
 }
 
+function writeUsers(callback){
+  let conversations = document.querySelector('.conversations');
+  data.forEach(users => {
+    
+    conversations.innerHTML += `
+    <li class="conversation">
+      <div class="conversation-name" id="${users[0]}">${users[1]} </div>
+      <div class="last-message">I dont like this</div>
+      </li>
+      `
+      callback();
+    });
+}
+        
+function changeConversation() {
+  let users = document.querySelectorAll('.conversation')
+
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    user.addEventListener("click", (e) => {
+      let name = e.srcElement.firstChild.data;
+      let id = e.target.id;
+      let element = e.currentTarget;
+      console.log(element)
+      username.innerHTML = name;
+      localStorage.setItem("receiver_id",id);
+      
+    })
+}
+
+    // username.innerHTML = 
+}
+
+var chatBox = document.getElementById('chat-box');
+function sendMessage() {
+     var messageInput = document.getElementById('message-input');
+     var message = messageInput.value;
+     var sender_name = localStorage.getItem("sender_name");
+     var sender_id = localStorage.getItem("sender_id");
+     var receiver_id = localStorage.getItem("receiver_id");
+     var receiver_name = localStorage.getItem("receiver_name");
+
+      if(!message == ""){
+
+      // Send message to server
+     fetch('http://localhost:8989/chat', {
+         method: 'POST',
+         body:`${sender_id},${receiver_id},${message}`,
+         headers: {
+             'Content-Type': 'application/x-www-form-urlencoded'
+         }
+     }).then(response => {
+         if (response.ok) {
+             console.log('Mesaj başarıyla gönderildi');
+             console.log(response)
+             // Additional actions if needed
+             messageInput.value = '';
+         } else {
+             console.error('Mesaj gönderilirken bir hata oluştu');
+         }
+     }).catch(error => {
+         console.error('Fetch hatası:', error);
+     });
+
+      // Clear message input
+ }else{
+     console.log('gondermedi')
+ }
+
+  }
+ function handleKeyPress(event) {
+     if (event.key === "Enter") {
+         // If the pressed key is Enter, simulate a click on the submit button
+         sendMessage();
+     }
+ }
 
   </script>
 </body>

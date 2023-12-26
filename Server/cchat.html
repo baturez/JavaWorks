@@ -83,7 +83,7 @@
 
    <!-- Inside the #chat-container div -->
    <div id="chat-container">
-    <ul id="chat-box"></ul>
+    <ul id="chat-box" contenteditable="true"></ul>
     <div id="input-container">
         <input type="text" id="message-input" placeholder="Mesajınızı girin" onkeyup="handleKeyPress(event)">
         <button id="send-button" onclick="sendMessage()">Gönder</button>
@@ -105,7 +105,10 @@
             // Send message to server
             fetch('/chatt', {
                 method: 'POST',
-                body: `{"${name}":"${message}"}`,
+                body: {
+                    name:name,
+                    
+                },
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
