@@ -6,7 +6,37 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/javax.servlet-api-3.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/javax.websocket-api-1.1-javadoc.zip"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-alpn-client-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-client-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-client-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-http-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-http-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-io-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-io-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-security-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-server-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-server-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-servlet-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-util-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-util-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-util-ajax-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-8.2.0.v20160908.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-core-client-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-core-common-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-core-server-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-jetty-api-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-jetty-client-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-jetty-common-12.0.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/jetty-websocket-jetty-server-12.0.5.jar"/>
 	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/slf4j-api-1.7.36.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/slf4j-api-2.0.9.jar"/>
 	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/sqlite-jdbc-3.44.1.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/websocket-api-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/websocket-client-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/websocket-common-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/websocket-server-9.4.53.v20231009.jar"/>
+	<classpathentry kind="lib" path="C:/Users/batuh/Desktop/jars/websocket-servlet-9.4.53.v20231009.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

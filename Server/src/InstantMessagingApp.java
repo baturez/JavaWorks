@@ -77,6 +77,51 @@ public class InstantMessagingApp {
     	    }
     	    return total;
     	}
+     static String GetSenderMessages(String sender) {
+    	 String total = "";
+    	 try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+    	         Statement statement = connection.createStatement();
+	    	         ResultSet resultSet = statement.executeQuery("SELECT * FROM messages WHERE sender_id = '" + sender + "'")) {
+    	        while (resultSet.next()) {
+    	            int messageId = resultSet.getInt("id");
+    	            int senderId = resultSet.getInt("sender_id");
+    	            int receiverId = resultSet.getInt("receiver_id");
+    	            String content = resultSet.getString("content");
+    	            Timestamp timestamp = resultSet.getTimestamp("timestamp");
+
+    	            total += "("+messageId+")" + "\t" +  senderId + "\t" + receiverId + "\t" +content + "\t" +timestamp + "\n";
+    	                               
+    	        }
+
+    	    } catch (SQLException e) {
+    	        e.printStackTrace();
+    	    }
+    	 return total;
+     
+     }
+     
+     static String getMessages(String sender,String receiver) {
+    	 String total = "";
+    	 try (Connection connection = DriverManager.getConnection(DATABASE_URL);
+    	         Statement statement = connection.createStatement();
+	    	         ResultSet resultSet = statement.executeQuery("SELECT * FROM messages WHERE (sender_id = '" + sender + "' AND receiver_id = '" + receiver + "') OR (sender_id = '" + receiver + "' AND receiver_id = '" + sender + "')")) {
+    	        while (resultSet.next()) {
+    	            int messageId = resultSet.getInt("id");
+    	            int senderId = resultSet.getInt("sender_id");
+    	            int receiverId = resultSet.getInt("receiver_id");
+    	            String content = resultSet.getString("content");
+    	            Timestamp timestamp = resultSet.getTimestamp("timestamp");
+
+    	            total += messageId+ "\t" +  senderId + "\t" + receiverId + "\t" +content + "\t" +timestamp + "\n";
+    	                               
+    	        }
+
+    	    } catch (SQLException e) {
+    	        e.printStackTrace();
+    	    }
+    	 return total;
+     }
+     
      static String showMessages() {
     	 String total ="";
     	    try (Connection connection = DriverManager.getConnection(DATABASE_URL);
@@ -90,7 +135,7 @@ public class InstantMessagingApp {
     	            String content = resultSet.getString("content");
     	            Timestamp timestamp = resultSet.getTimestamp("timestamp");
 
-    	            total += messageId + "\t" +  senderId + "\t" + receiverId + "\t" +content + "\t" +timestamp + "\n";
+    	            total += "("+messageId+")" + "\t" +  senderId + "\t" + receiverId + "\t" +content + "\t" +timestamp + "\n";
     	                               
     	        }
 

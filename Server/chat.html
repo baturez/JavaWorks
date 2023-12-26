@@ -8,7 +8,7 @@
 .app{
   height: 100vh;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .users-container{
@@ -44,9 +44,9 @@
 }
 
 .chat-container{
+  display: none;
   width:100%;
   height: 100vh;
-  display: flex;
   flex-direction: column;
   align-items: center;
 }
@@ -72,6 +72,7 @@
 .chat-conversations{
   display: flex;
   flex-direction: column;
+  gap: 15px;
 }
 .sent-message, .receieved-message{
   padding: 5px 10px;
@@ -174,11 +175,7 @@
         </div>
         <div class="chat">
           <div class="chat-conversations">
-            <div class="sent-message">Hi</div>
-            <div class="receieved-message">Hello !</div>
-            <div class="sent-message">What's your name ? </div>
-            <div class="receieved-message">Açım !</div>
-            <div class="sent-message">Oh! Nice to meet you Açım. </div>
+    
           </div>
 
         <div id="chat-container">
@@ -194,6 +191,9 @@
 
   <script >
 let username = document.querySelector('.user-name')
+let chat_conversations = document.querySelector('.chat-conversations')
+let chat_container = document.querySelector('.chat-container')
+
 let data = []
 
 
@@ -209,28 +209,43 @@ function getUsers(){
             data.push(user.split(","))
           });
           let sender_name = localStorage.getItem('sender_name')
-          data.map(user => (user[1] == sender_name ) ? localStorage.setItem("sender_id",user[0]) : false)
+          console.log(data)
+          data.map(user => {
+            console.log(user[1])
+            let name = user[1];
+            if(name == sender_name ) {
+              localStorage.setItem("sender_id",user[0]) 
+            } 
+            else{
+              return false;
+            }
+          })
+          
           writeUsers(changeConversation);
         });
 }
 
 function writeUsers(callback){
+  let sender_id = localStorage.getItem("sender_id");
   let conversations = document.querySelector('.conversations');
   data.forEach(users => {
     
-    conversations.innerHTML += `
-    <li class="conversation">
-      <div class="conversation-name" id="${users[0]}">${users[1]} </div>
-      <div class="last-message">I dont like this</div>
-      </li>
-      `
+    if(sender_id != users[0]){
+      conversations.innerHTML += `
+      <li class="conversation">
+        <div class="conversation-name" id="${users[0]}">${users[1]} </div>
+        <div class="last-message">I dont like this</div>
+        </li>
+        `
+      }
+      
       callback();
+      chat_container.style = "display:none;"
     });
 }
         
 function changeConversation() {
   let users = document.querySelectorAll('.conversation')
-
   for (let i = 0; i < users.length; i++) {
     const user = users[i];
     user.addEventListener("click", (e) => {
@@ -240,6 +255,7 @@ function changeConversation() {
       console.log(element)
       username.innerHTML = name;
       localStorage.setItem("receiver_id",id);
+      chat_container.style = "display:flex;"
       
     })
 }
@@ -255,42 +271,118 @@ function sendMessage() {
      var sender_id = localStorage.getItem("sender_id");
      var receiver_id = localStorage.getItem("receiver_id");
      var receiver_name = localStorage.getItem("receiver_name");
-
-      if(!message == ""){
-
-      // Send message to server
-     fetch('http://localhost:8989/chat', {
+     if(!message == ""){
+       
+       // Send message to server
+       fetch('http://localhost:8989/chat'&& 'http://25.49.145.97:8989/chat' , {
          method: 'POST',
          body:`${sender_id},${receiver_id},${message}`,
          headers: {
-             'Content-Type': 'application/x-www-form-urlencoded'
-         }
-     }).then(response => {
-         if (response.ok) {
-             console.log('Mesaj başarıyla gönderildi');
-             console.log(response)
-             // Additional actions if needed
-             messageInput.value = '';
-         } else {
-             console.error('Mesaj gönderilirken bir hata oluştu');
-         }
-     }).catch(error => {
-         console.error('Fetch hatası:', error);
-     });
+           'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }).then(response => {
+          if (response.ok) {
+            console.log('Mesaj başarıyla gönderildi');
+            console.log(response)
+            // Additional actions if needed
 
-      // Clear message input
- }else{
-     console.log('gondermedi')
- }
+            messageInput.value = '';
+            getMessages()
+            
+          } else {
+            console.error('Mesaj gönderilirken bir hata oluştu');
+          }
+        }).catch(error => {
+          console.error('Fetch hatası:', error);
+        });
+        
+        // Clear message input
+      }else{
+        console.log('gondermedi')
+      }
+      
+    }
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        // If the pressed key is Enter, simulate a click on the submit button
+        sendMessage();
+      }
+    }
+    
+    getMessages();
+    let conversations = [];
+    function getMessages() {
+      let message_id;
+      let sender_id;
+      let receiever_id;
+      let text;
+      
+      fetch('/conversation')
+      .then(response => response.text())
+      .then(messages => {
+        messages = messages.split("\n");
+        messages.forEach(message => {
+          message = message.split("\t")
+          message.forEach(element => {
+            message_id = message[0];
+            sender_id = message[1];
+            receiever_id = message[2];
+            text = message[3];
+            
+          });
+          console.log('getmessage')
+          writeConversation(message_id,text,sender_id,receiever_id);
+        });
+        showConversation()
+      });
+      
+      
+    }
+    
+    function writeConversation(message_id,message,sender,receiver) {
+      console.log('write')
 
-  }
- function handleKeyPress(event) {
-     if (event.key === "Enter") {
-         // If the pressed key is Enter, simulate a click on the submit button
-         sendMessage();
-     }
- }
+      let sender_id = localStorage.getItem("sender_id")
+      let receiever_id = localStorage.getItem("receiver_id")
+      
+      if(sender_id == sender){
+        
+        conversations.push({id:sender, message:message})
+        
+      }else if(sender_id == receiver){
 
+        conversations.push({id:sender, message:message})
+        
+        
+      }
+      
+      
+    }
+    
+    function showConversation(){
+      console.log('showconversation')
+
+      let sender_id = localStorage.getItem("sender_id")
+      let receiever_id = localStorage.getItem("receiver_id")
+      console.log(chat_conversations)
+      chat_conversations.innerHTML = "" 
+      console.log(chat_conversations)
+      conversations.forEach(conversation => {
+        if(conversation.id == sender_id){
+          
+          chat_conversations.innerHTML += `
+          <div class="sent-message" id="${conversation.id}">${conversation.message} </div>
+          `
+          
+        }else{
+          chat_conversations.innerHTML += `
+          <div class="receieved-message" id="${conversation.id}">${conversation.message} </div>
+          `
+        }
+        conversations = []
+        console.log(conversation)
+      });
+    }
   </script>
 </body>
 </html>
