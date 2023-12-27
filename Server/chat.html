@@ -190,6 +190,46 @@
     </div>
 
   <script >
+
+
+
+let websocket;
+
+function connectWebSocket() {
+    const wsEndpoint = 'ws://localhost:8989/chat';
+    websocket = new WebSocket(wsEndpoint);
+
+    websocket.onopen = function (event) {
+        console.log('WebSocket connection opened:', event);
+    };
+
+    websocket.onmessage = function (event) {
+        console.log('WebSocket message received:', event.data);
+        // Gelen mesajı işleyin (örneğin, UI'ı güncelleyin)
+    };
+
+    websocket.onclose = function (event) {
+        console.log('WebSocket connection closed:', event);
+    };
+
+    websocket.onerror = function (event) {
+        console.error('WebSocket error:', event);
+    };
+}
+connectWebSocket();
+// Uygulama başladığında connectWebSocket() fonksiyonunu çağırın
+
+// Uygulama başladığında connectWebSocket() fonksiyonunu çağırın
+// function sendWebSocketMessage(message) {
+//     if (websocket.readyState === WebSocket.OPEN) {
+//         websocket.send(message);
+//     } else {
+//         console.error('WebSocket is not open.');
+//     }
+// }
+
+// Bir mesaj gönderme örneği
+
 let username = document.querySelector('.user-name')
 let chat_conversations = document.querySelector('.chat-conversations')
 let chat_container = document.querySelector('.chat-container')
@@ -209,9 +249,7 @@ function getUsers(){
             data.push(user.split(","))
           });
           let sender_name = localStorage.getItem('sender_name')
-          console.log(data)
           data.map(user => {
-            console.log(user[1])
             let name = user[1];
             if(name == sender_name ) {
               localStorage.setItem("sender_id",user[0]) 
@@ -252,7 +290,6 @@ function changeConversation() {
       let name = e.srcElement.firstChild.data;
       let id = e.target.id;
       let element = e.currentTarget;
-      console.log(element)
       username.innerHTML = name;
       localStorage.setItem("receiver_id",id);
       chat_container.style = "display:flex;"
@@ -265,12 +302,14 @@ function changeConversation() {
 
 var chatBox = document.getElementById('chat-box');
 function sendMessage() {
+  // sendWebSocketMessage('Merhaba, WebSocket!');
      var messageInput = document.getElementById('message-input');
      var message = messageInput.value;
      var sender_name = localStorage.getItem("sender_name");
      var sender_id = localStorage.getItem("sender_id");
      var receiver_id = localStorage.getItem("receiver_id");
      var receiver_name = localStorage.getItem("receiver_name");
+     message = convertToEnglish(message)
      if(!message == ""){
        
        // Send message to server
@@ -283,7 +322,6 @@ function sendMessage() {
         }).then(response => {
           if (response.ok) {
             console.log('Mesaj başarıyla gönderildi');
-            console.log(response)
             // Additional actions if needed
 
             messageInput.value = '';
@@ -324,13 +362,12 @@ function sendMessage() {
         messages.forEach(message => {
           message = message.split("\t")
           message.forEach(element => {
-            message_id = message[0];
+            message_id = message[0];  
             sender_id = message[1];
             receiever_id = message[2];
             text = message[3];
             
           });
-          console.log('getmessage')
           writeConversation(message_id,text,sender_id,receiever_id);
         });
         showConversation()
@@ -340,7 +377,6 @@ function sendMessage() {
     }
     
     function writeConversation(message_id,message,sender,receiver) {
-      console.log('write')
 
       let sender_id = localStorage.getItem("sender_id")
       let receiever_id = localStorage.getItem("receiver_id")
@@ -360,13 +396,10 @@ function sendMessage() {
     }
     
     function showConversation(){
-      console.log('showconversation')
 
       let sender_id = localStorage.getItem("sender_id")
       let receiever_id = localStorage.getItem("receiver_id")
-      console.log(chat_conversations)
       chat_conversations.innerHTML = "" 
-      console.log(chat_conversations)
       conversations.forEach(conversation => {
         if(conversation.id == sender_id){
           
@@ -380,9 +413,27 @@ function sendMessage() {
           `
         }
         conversations = []
-        console.log(conversation)
       });
     }
+    function convertToEnglish(text) {
+    const turkishChars = {
+        'Ç': 'C',
+        'ç': 'c',
+        'Ğ': 'G',
+        'ğ': 'g',
+        'İ': 'I',
+        'ı': 'i',
+        'Ö': 'O',
+        'ö': 'o',
+        'Ş': 'S',
+        'ş': 's',
+        'Ü': 'U',
+        'ü': 'u'
+    };
+
+    return text.replace(/[ÇçĞğİıÖöŞşÜü]/g, char => turkishChars[char] || char);
+}
+
   </script>
 </body>
 </html>

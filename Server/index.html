@@ -136,6 +136,7 @@
 
       function adduser() {
         let name = document.querySelector(".name").value;
+        name = convertToEnglish(name)
         console.log(name);
         localStorage.setItem("sender_name", name);
         fetch("http://localhost:8989/users" && "25.49.145.97:8989/users", {
@@ -148,6 +149,24 @@
           .then((data) => console.log(data))
           .catch((error) => console.error(error));
       }
+      function convertToEnglish(text) {
+    const turkishChars = {
+        'Ç': 'C',
+        'ç': 'c',
+        'Ğ': 'G',
+        'ğ': 'g',
+        'İ': 'I',
+        'ı': 'i',
+        'Ö': 'O',
+        'ö': 'o',
+        'Ş': 'S',
+        'ş': 's',
+        'Ü': 'U',
+        'ü': 'u'
+    };
+
+    return text.replace(/[ÇçĞğİıÖöŞşÜü]/g, char => turkishChars[char] || char);
+}
     </script>
   </body>
 </html>

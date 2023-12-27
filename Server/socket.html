@@ -1,0 +1,26 @@
+<script>
+    let websocket;
+
+function connectWebSocket() {
+    const wsEndpoint = 'ws://localhost:8989/chat';
+    websocket = new WebSocket(wsEndpoint);
+
+    websocket.onopen = function (event) {
+        console.log('WebSocket connection opened:', event);
+    };
+
+    websocket.onmessage = function (event) {
+        console.log('WebSocket message received:', event.data);
+        // Gelen mesajı işleyin (örneğin, UI'ı güncelleyin)
+    };
+
+    websocket.onclose = function (event) {
+        console.log('WebSocket connection closed:', event);
+    };
+
+    websocket.onerror = function (event) {
+        console.error('WebSocket error:', event);
+    };
+}
+connectWebSocket();
+</script>
