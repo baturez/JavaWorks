@@ -1,0 +1,414 @@
+  <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Server</title>
+<style>
+.app{
+  height: 100vh;
+  display: flex;
+  justify-content: space-between;
+}
+
+.users-container{
+  width:250px;
+  height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.online-users{
+  border-bottom: 2px solid #ddd;
+  width:100%;
+  display:flex;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.user-info{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.online-users img{
+  width:48px;
+}
+.conversations{
+  margin: 0;
+  padding: 0;
+}
+.conversation{
+  padding:10px 20px;
+  list-style: none;
+  border-bottom: 1px solid #ddd;
+}
+
+.chat-container{
+  display: none;
+  width:100%;
+  height: 100vh;
+  flex-direction: column;
+  align-items: center;
+}
+.user-container{
+  background-color: #ddd;
+  display: flex;
+  align-items: center;
+  width: 70%;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+.user-container .user-img{
+  width: 56px;
+}
+.user-name, .conversation-name{
+  font-weight: bold;
+}
+
+.chat{
+  width: 70%;
+  margin-top: 50px;
+}
+.chat-conversations{
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.sent-message, .receieved-message{
+  padding: 5px 10px;
+  width: auto;
+}
+.sent-message{
+  align-self: flex-end;
+  background-color: #dad6d6;
+}
+
+.receieved-message{
+  align-self: flex-start;
+  background-color: antiquewhite;
+}
+
+#chat-container {
+            width: 70%;
+            max-width: 600px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-box {
+            flex-grow: 1;
+            overflow-y: scroll;
+            border-bottom: 1px solid #ccc;
+            padding: 10px;
+        }
+        .message{
+            width:150px;
+            height: 15px;
+            background-color: #ddd;
+        }
+        #input-container {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            border-top: 1px solid #ccc;
+            border-radius: 0 0 8px 0;
+            outline: none;
+        }
+
+        #message-input:focus {
+            border-color: #4caf50;
+        }
+
+        #send-button {
+            padding: 10px;
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
+            border-radius: 0 0 0 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #send-button:hover {
+            background-color: #45a049;
+        }
+</style>
+</head>
+<body>
+
+    <div class="app">
+      <aside class="users-container">
+        
+        <div class="online-users">
+          <div class="user-info">
+            <span class="username"></span>
+          </div>      
+          <div class="user-info">
+            <span class="username"></span>
+          </div>      
+          <div class="user-info">
+            <span class="username"></span>
+          </div>      
+
+        </div>
+
+        <ul class="conversations">
+     
+        </ul>
+     
+      </aside>
+
+      <div class="chat-container">
+        <div class="user-container">
+          <div class="user-name">Batu</div>
+        </div>
+        <div class="chat">
+          <div class="chat-conversations">
+    
+          </div>
+
+        <div id="chat-container">
+          <div id="input-container">
+              <input type="text" id="message-input" placeholder="Mesajınızı girin" onkeyup="handleKeyPress(event)">
+              <button id="send-button" onclick="sendMessage()">Gönder</button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  <script >
+
+
+
+
+
+let username = document.querySelector('.user-name')
+let chat_conversations = document.querySelector('.chat-conversations')
+let chat_container = document.querySelector('.chat-container')
+
+let data = []
+
+
+setInterval(() => {
+  getUsers();
+}, 1000);
+console.log(data);    
+    function getUsers(){
+
+      fetch('/users')
+        .then(response => response.text())
+        .then(users => {
+          users = users.split(" ");
+          users.pop();
+          users.forEach(user => {
+            
+            data.push(user.split(","))
+          });
+          let receiever_name = localStorage.getItem('receiver_name')
+          
+          let sender_name = localStorage.getItem('sender_name')
+          username.innerHTML= receiever_name;
+          data.map(user => {
+            let name = user[1];
+            if(name == sender_name ) {
+              localStorage.setItem("sender_id",user[0]) 
+            } 
+            else{
+              return false;
+            }
+          })
+          writeUsers();
+          data = [];
+        });
+      }
+      
+      function writeUsers(callback){
+        let sender_id = localStorage.getItem("sender_id");
+        let conversations = document.querySelector('.conversations');
+        conversations.innerHTML = "";
+        data.forEach(users => {
+    
+    if(sender_id != users[0]){
+      conversations.innerHTML += `
+      <li class="conversation">
+        <div class="conversation-name" onclick = "changeConversation()" id="${users[0]}">${users[1]} </div>
+        <div class="last-message">I dont like this</div>
+        </li>
+        `
+      }
+      // chat_container.style = "display:none;"
+    
+    });
+
+  }
+        
+function changeConversation() {
+  let users = document.querySelectorAll('.conversation')
+  for (let i = 0; i < users.length; i++) {
+    const user = users[i];
+    user.addEventListener("click", (e) => {
+      let name = e.srcElement.firstChild.data;
+      let id = e.target.id;
+      let element = e.currentTarget;
+      username.innerHTML = name;
+      localStorage.setItem("receiver_id",id);
+      localStorage.setItem("receiver_name",name);
+
+      chat_container.style = "display:flex;"
+      
+    })
+}
+
+}
+
+var chatBox = document.getElementById('chat-box');
+function sendMessage() {
+     var messageInput = document.getElementById('message-input');
+     var message = messageInput.value;
+     var sender_name = localStorage.getItem("sender_name");
+     var sender_id = localStorage.getItem("sender_id");
+     var receiver_id = localStorage.getItem("receiver_id");
+     var receiver_name = localStorage.getItem("receiver_name");
+     message = convertToEnglish(message)
+     if(!message == ""){
+       
+       // Send message to server
+       fetch('http://localhost:8989/chat'&& 'http://25.49.145.97:8989/chat' , {
+         method: 'POST',
+         body:`${sender_id},${receiver_id},${message}`,
+         headers: {
+           'Content-Type': 'application/x-www-form-urlencoded'
+          }
+        }).then(response => {
+          if (response.ok) {
+            console.log('Mesaj başarıyla gönderildi');
+            // Additional actions if needed
+
+            messageInput.value = '';
+            getMessages()
+            
+          } else {
+            console.error('Mesaj gönderilirken bir hata oluştu');
+          }
+        }).catch(error => {
+          console.error('Fetch hatası:', error);
+        });
+        
+        // Clear message input
+      }else{
+        console.log('gondermedi')
+      }
+      
+    }
+    function handleKeyPress(event) {
+      if (event.key === "Enter") {
+        // If the pressed key is Enter, simulate a click on the submit button
+        sendMessage();
+      }
+    }
+    setInterval(() => {
+      getMessages();
+    }, 1000);
+    
+    let conversations = [];
+    function getMessages() {
+      let message_id;
+      let sender_id;
+      let receiever_id;
+      let text;
+      
+      fetch('/conversation')
+      .then(response => response.text())
+      .then(messages => {
+        messages = messages.split("\n");
+        messages.forEach(message => {
+          message = message.split("\t")
+          message.forEach(element => {
+            message_id = message[0];  
+            sender_id = message[1];
+            receiever_id = message[2];
+            text = message[3];
+            
+          });
+          writeConversation(message_id,text,sender_id,receiever_id);
+        });
+        showConversation()
+      });
+      
+      
+    }
+    
+    function writeConversation(message_id,message,sender,receiver) {
+
+      let sender_id = localStorage.getItem("sender_id")
+      let receiever_id = localStorage.getItem("receiver_id")
+      
+      if(sender_id == sender){
+        
+        conversations.push({id:sender, message:message})
+        
+      }else if(sender_id == receiver){
+
+        conversations.push({id:sender, message:message})
+        
+        
+      }
+      
+      
+    }
+    
+    function showConversation(){
+
+      let sender_id = localStorage.getItem("sender_id")
+      let receiever_id = localStorage.getItem("receiver_id")
+      chat_conversations.innerHTML = "" 
+      conversations.forEach(conversation => {
+        if(conversation.id == sender_id){
+          
+          chat_conversations.innerHTML += `
+          <div class="sent-message" id="${conversation.id}">${conversation.message} </div>
+          `
+          
+        }else{
+          chat_conversations.innerHTML += `
+          <div class="receieved-message" id="${conversation.id}">${conversation.message} </div>
+          `
+        }
+        conversations = []
+      });
+    }
+    function convertToEnglish(text) {
+    const turkishChars = {
+        'Ç': 'C',
+        'ç': 'c',
+        'Ğ': 'G',
+        'ğ': 'g',
+        'İ': 'I',
+        'ı': 'i',
+        'Ö': 'O',
+        'ö': 'o',
+        'Ş': 'S',
+        'ş': 's',
+        'Ü': 'U',
+        'ü': 'u'
+    };
+
+    return text.replace(/[ÇçĞğİıÖöŞşÜü]/g, char => turkishChars[char] || char);
+}
+
+  </script>
+</body>
+</html>
