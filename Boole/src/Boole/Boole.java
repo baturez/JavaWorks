@@ -1,4 +1,4 @@
-package _20010310067_BatuhanFahri_Kabasakaloglu;
+package Boole;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-public class _20010310067_Boole {
+public class Boole {
 	public static List<String> degiskenler = new ArrayList<String>();
 	public static Map<String, Boolean> degerler = new HashMap<String, Boolean>();
 	public static String[] sc;
